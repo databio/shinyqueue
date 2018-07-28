@@ -1,25 +1,10 @@
-
-# shinyDepot makes it easy to deploy computation-intensive shiny apps. It
-# decouples heavy processing tasks from interactive visualization tasks. There
-# are two types of containers: interactive containers, and processing
-# containers.
-
-1. interactive container
-	task 1: collect job inputs
-		shinyDepot::submitJob()
-	task 2: run results visualization
-		shinyDepot::retrieveJob()
-2. process container
-	task: heavy processing
-		shinyDepot::lurk()
-
 #' Function that monitors a folder and runs a function when a file arrives in the
 #' monitored folder. Run by lurker containers to check for new jobs to process.
 #'
 #' @param depotQueueDir The folder to watch for new job files
 #' @param processFunctions A list that maps process classes to functions that process them.
- # the function to run on a new job file when found. 
- # Should take the absolulte file name as the sole argument.
+#' the function to run on a new job file when found. 
+#' Should take the absolulte file name as the sole argument.
 
 lurk = function(depotQueueDir, processFunctions) {
 	# list of process classes I process:
@@ -96,80 +81,9 @@ retrieveJob = function(jobID) {
 
 }
 
-setJobStatus(jobID, status) {
+setJobStatus = function(jobID, status) {
 		jobStatusFile = paste0(depotResultsDir, jobID, ".txt")
 		write(jobStatusFile, status)
 }
-
-
-
-
-
-
-
-
-# task 1: submit job
-
-job = list()
-job$uploadedFile = "path/to/file"
-job$referenceGenome = "hg38"
-job$universe = "blah"
-shinyDepot::submitJob(depotQueueDir, datalist=job)
-
-# task 2: retrieve job and interactive results viewer
-
-# parse URL
-jobID = getJobIDFromURL()
-jobStatus = shinyDepot::retrieveJob(jobID)
-
-#display results viewer...
-
-
-
-# task 3: process jobs
-
-
-
-# A function that will run the LOLAweb process for a given "job" file.
-# The job file should specify the path to the user uploaded file and
-# any other user-selections provided
-
-processLOLAwebJob = function(file, outfolder="/path/to/results/", resources=LWResources) {
-
-	job = yaml::yaml.load(file)
-
-	# Access the pre-loaded data
-	regionDB = resources$regionDBs[jobs$genome]
-	
-	result = runLOLA(job$query, regionDB)
-
-	# Now, store that result in the output folder,
-	# which should then render correctly
-	save(result, outfolder)
-}
-
-# Register any job class this container knows how to handle,
-# and map those jobs to the function that can handle it.
-processFunctions = list("LOLAweb" = "processLOLAwebJob")
-
-
-
-
-# First, load up some data to save in this container
-LWResources = list()
-LWResources$regionDBs = list()
-for (genome in genomes) {
-	LWResources$regionDBs[[genome]] = LOLA::loadRegionDB("/path/to/genome")
-}
-LWResources$universes = list()
-
-for (universe in universes) {
-	LWResources$universes[[universe]] = LOLA::readbed("/path/to/universe")
-}
-
-
-
-# Now, just lurk, waiting for new jobs:
-shinyDepot::lurk("/path/to/job/folder", processFunctions)
 
 
