@@ -1,10 +1,25 @@
 ###############################
 # lurk
 # runs in background to process incoming jobs
+#' Title
+#'
+#' @param running
+#' @param process
+#' @param db_url
+#' @param db_name
+#' @param cache_dir
+#' @param interval
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#'
 lurk <- function(running = TRUE,
                  process = "process.R",
                  db_url,
                  db_name,
+                 cache_dir = "cache/",
                  interval = 10) {
 
   con <- connect(db_url, db_name)
@@ -32,14 +47,10 @@ lurk <- function(running = TRUE,
         con$update(idstr,
                    update = '{"$set":{"status":"Running"}}')
 
-        # # run the process function
-        # res <- runit(size = unlist(inprocess$size),
-        #              dist = unlist(inprocess$distribution))
-
         source(process, local = TRUE)
 
         # create file pointer and save cache
-        fp <- paste0("cache/", inprocess$id, ".rds")
+        fp <- paste0(cache_dir, inprocess$id, ".rds")
         saveRDS(res, file = fp)
 
         # set status to completed

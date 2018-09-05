@@ -1,6 +1,14 @@
 
 ###################
 # parse_query
+#' Title
+#'
+#' @param session
+#'
+#' @return
+#' @export
+#'
+#' @examples
 parse_query <- function(session = getSession()) {
 
   shiny::reactive({ shiny::parseQueryString(session$clientData$url_search) })
@@ -9,6 +17,17 @@ parse_query <- function(session = getSession()) {
 
 ##################
 # retrieve job
+#' Title
+#'
+#' @param session
+#' @param cacheDir
+#' @param db_url
+#' @param db_name
+#'
+#' @return
+#' @export
+#'
+#' @examples
 retrieve <- function(session = getSession(),
                      cacheDir = "cache/",
                      db_url,

@@ -1,5 +1,15 @@
 # hash
 
+#' Title
+#'
+#' @param alpha
+#' @param numeric
+#' @param length
+#'
+#' @return
+#' @export
+#'
+#' @examples
 hash <- function(alpha = TRUE, numeric = TRUE, length = 15) {
 
   if (alpha & !numeric) {
@@ -25,6 +35,13 @@ hash <- function(alpha = TRUE, numeric = TRUE, length = 15) {
 }
 
 # connect
+#' Title
+#'
+#' @param db_url
+#' @param db_name
+#'
+#'
+#' @examples
 connect <- function(db_url, db_name) {
 
   mongolite::mongo(url = db_url, db = db_name)
@@ -36,6 +53,9 @@ connect <- function(db_url, db_name) {
 # get session
 # helper function from shinyFiles
 
+#' Title
+#'
+#'
 getSession <- function() {
   session <- shiny::getDefaultReactiveDomain()
 
