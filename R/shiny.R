@@ -35,11 +35,11 @@ retrieve <- function(session = getSession(),
 
   con <- connect(db_url, db_name)
 
-  query <- reactive({ shiny::parseQueryString(session$clientData$url_search) })
+  query <- shiny::reactive({ shiny::parseQueryString(session$clientData$url_search) })
 
-  dat <<- reactiveValues()
+  dat <<- shiny::reactiveValues()
 
-  observe({
+  shiny::observe({
 
     # is there a query and is it in the job db?
     if(length(query()) != 0 & any(query() %in% con$find()$id)) {
@@ -56,8 +56,8 @@ retrieve <- function(session = getSession(),
         dat$rdist <<- readRDS(file = paste0(cacheDir, query(), ".rds"))
 
         # focus on results tab
-        updateNavbarPage(session, "mainmenu",
-                         selected = "Results")
+        shiny::updateNavbarPage(session, "mainmenu",
+                                selected = "Results")
 
         # is the job queued
       } else if(con$find(query = idstr)$status == "Queued") {
@@ -66,7 +66,7 @@ retrieve <- function(session = getSession(),
         dat$status <<- "Queued"
 
         # force refresh every X seconds
-        invalidateLater(5000, session)
+        shiny::invalidateLater(5000, session)
 
       } else if(con$find(query = idstr)$status == "Running") {
 
@@ -74,7 +74,7 @@ retrieve <- function(session = getSession(),
         dat$status <<- "Running"
 
         # force refresh every X seconds
-        invalidateLater(5000, session)
+        shiny::invalidateLater(5000, session)
 
       }
 
