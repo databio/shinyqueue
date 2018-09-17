@@ -21,8 +21,7 @@ parse_query <- function(session = getSession()) {
 #'
 #' @param session
 #' @param cacheDir
-#' @param db_url
-#' @param db_name
+#' @param con
 #'
 #' @return
 #' @export
@@ -30,10 +29,9 @@ parse_query <- function(session = getSession()) {
 #' @examples
 retrieve <- function(session = getSession(),
                      cacheDir = "cache/",
-                     db_url,
-                     db_name) {
+                     con) {
 
-  con <- connect(db_url, db_name)
+  check_con(con)
 
   query <- shiny::reactive({ shiny::parseQueryString(session$clientData$url_search) })
 

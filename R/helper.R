@@ -69,3 +69,11 @@ getSession <- function() {
   session
 }
 
+# check connection
+
+check_con <- function(con) {
+
+  if(!"mongo" %in% class(con) | !con$info()$server$ok == 1)
+    stop("The connection provided via con must be an active connection to a Mongo database")
+
+}

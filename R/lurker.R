@@ -5,8 +5,7 @@
 #'
 #' @param running
 #' @param process
-#' @param db_url
-#' @param db_name
+#' @param con
 #' @param cache_dir
 #' @param interval
 #'
@@ -17,12 +16,11 @@
 #'
 lurk <- function(running = TRUE,
                  process = "process.R",
-                 db_url,
-                 db_name,
+                 con,
                  cache_dir = "cache/",
                  interval = 10) {
 
-  con <- connect(db_url, db_name)
+  check_con(con)
 
   while(running) {
 
