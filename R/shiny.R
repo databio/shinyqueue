@@ -86,3 +86,38 @@ retrieve <- function(session = getSession(),
 
   })
 }
+
+
+# submit job
+#' Title
+#'
+#' @param con
+#' @param id
+#' @param type
+#' @param status
+#' @param time_queued
+#' @param input
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#'
+submit <- function(con,
+                   id,
+                   type,
+                   status = "Queued",
+                   time_queued = Sys.time(),
+                   input) {
+
+  check_con(con)
+
+  specs <- c(id = id,
+             type = type,
+             status = status,
+             time_queued = time_queued,
+             shiny::reactiveValuesToList(input))
+
+  con$insert(specs)
+
+}
