@@ -15,7 +15,7 @@
 #' @examples
 #'
 lurk <- function(running = TRUE,
-                 process = "process.R",
+                 process,
                  con,
                  cache_dir = "cache/",
                  interval = 10) {
@@ -33,22 +33,23 @@ lurk <- function(running = TRUE,
       for (i in 1:qdepth) {
 
         # get job at iterator
-        inprocess <- con$find(queued)[i,]
+        input <<- con$find(queued)[i,]
 
         # get id json string for updating db
-        idstr <- paste0("{\"id\":\"", inprocess$id, "\"}")
+        idstr <- paste0("{\"id\":\"", input$job_id, "\"}")
 
         # message
-        message(paste0("Running job ", inprocess$id))
+        message(paste0("Running job ", input$job_id))
 
         # set status to running
         con$update(idstr,
                    update = '{"$set":{"status":"Running"}}')
 
-        source(process, local = TRUE)
+        # evaluate function passed in the process argument via job_type
+        res <- eval(substitute(process[[unlist(input$job_type)]]))
 
         # create file pointer and save cache
-        fp <- paste0(cache_dir, inprocess$id, ".rds")
+        fp <- paste0(cache_dir, input$job_id, ".rds")
         saveRDS(res, file = fp)
 
         # set status to completed
@@ -57,6 +58,9 @@ lurk <- function(running = TRUE,
 
         # check queue depth
         qdepth <- con$count(queued)
+
+        # cleanup
+        rm(input, envir = .GlobalEnv)
 
       }
 
