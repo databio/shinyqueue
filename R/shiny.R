@@ -35,7 +35,7 @@ retrieve <- function(session = getSession(),
 
   query <- shiny::reactive({ shiny::parseQueryString(session$clientData$url_search) })
 
-  dat <<- shiny::reactiveValues()
+  shinyqueue <<- shiny::reactiveValues()
 
   shiny::observe({
 
@@ -48,10 +48,10 @@ retrieve <- function(session = getSession(),
       # is the job done?
       if(con$find(query = idstr)$status == "Completed") {
 
-        dat$status <<- "Completed"
+        shinyqueue$status <<- "Completed"
 
         # read data
-        dat$rdist <<- readRDS(file = paste0(cacheDir, query(), ".rds"))
+        shinyqueue$result <<- readRDS(file = paste0(cacheDir, query(), ".rds"))
 
         # focus on results tab
         shiny::updateNavbarPage(session, "mainmenu",
@@ -61,7 +61,7 @@ retrieve <- function(session = getSession(),
       } else if(con$find(query = idstr)$status == "Queued") {
 
         # set result object to "queued
-        dat$status <<- "Queued"
+        shinyqueue$status <<- "Queued"
 
         # force refresh every X seconds
         shiny::invalidateLater(5000, session)
@@ -69,7 +69,7 @@ retrieve <- function(session = getSession(),
       } else if(con$find(query = idstr)$status == "Running") {
 
         # set result object to "queued
-        dat$status <<- "Running"
+        shinyqueue$status <<- "Running"
 
         # force refresh every X seconds
         shiny::invalidateLater(5000, session)
@@ -80,7 +80,7 @@ retrieve <- function(session = getSession(),
 
     } else if (length(query() != 0)) {
 
-      dat$bad <- "bad query"
+      shinyqueue$bad <- "bad query"
 
     }
 
