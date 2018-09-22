@@ -36,7 +36,7 @@ lurk <- function(running = TRUE,
         input <<- con$find(queued)[i,]
 
         # get id json string for updating db
-        idstr <- paste0("{\"id\":\"", input$job_id, "\"}")
+        idstr <- paste0("{\"job_id\":\"", input$job_id, "\"}")
 
         # message
         message(paste0("Running job ", input$job_id))

@@ -40,10 +40,10 @@ retrieve <- function(session = getSession(),
   shiny::observe({
 
     # is there a query and is it in the job db?
-    if(length(query()) != 0 & any(query() %in% con$find()$id)) {
+    if(length(query()) != 0 & any(query() %in% con$find()$job_id)) {
 
       # construct id query string for job db
-      idstr <- paste0("{\"id\":\"", query(), "\"}")
+      idstr <- paste0("{\"job_id\":\"", query(), "\"}")
 
       # is the job done?
       if(con$find(query = idstr)$status == "Completed") {
