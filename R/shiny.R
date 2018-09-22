@@ -104,16 +104,16 @@ retrieve <- function(session = getSession(),
 #' @examples
 #'
 submit <- function(con,
-                   id,
-                   type,
+                   job_id,
+                   job_type,
                    status = "Queued",
                    time_queued = Sys.time(),
                    input) {
 
   check_con(con)
 
-  specs <- c(id = id,
-             type = type,
+  specs <- c(job_id = job_id,
+             job_type = job_type,
              status = status,
              time_queued = time_queued,
              shiny::reactiveValuesToList(input))
