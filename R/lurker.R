@@ -48,10 +48,11 @@ lurk <- function(running = TRUE,
         # evaluate function passed in the process argument via job_type
         res <- eval(substitute(process[[unlist(input$job_type)]]))
 
-        # create file pointer and save cache
-        fp <- paste0(cache_dir, input$job_id, ".rds")
-        saveRDS(res, file = fp)
-
+        # cache result
+        simpleCache::simpleCache(cacheName = unlist(input$job_id), 
+                                 instruction = res,
+                                 cacheDir = cache_dir)
+        
         # set status to completed
         con$update(idstr,
                    update = '{"$set":{"status":"Completed"}}')

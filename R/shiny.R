@@ -28,7 +28,7 @@ parse_query <- function(session = getSession()) {
 #'
 #' @examples
 retrieve <- function(session = getSession(),
-                     cacheDir = "cache/",
+                     cache_dir = "cache/",
                      con) {
 
   check_con(con)
@@ -51,7 +51,11 @@ retrieve <- function(session = getSession(),
         shinyqueue$status <<- "Completed"
 
         # read data
-        shinyqueue$result <<- readRDS(file = paste0(cacheDir, query(), ".rds"))
+        simpleCache::simpleCache(cacheName = unlist(query()),
+                                 cacheDir = cache_dir,
+                                 assignToVariable = "res")
+        
+        shinyqueue$result <<- res
 
         # focus on results tab
         shiny::updateNavbarPage(session, "mainmenu",
