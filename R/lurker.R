@@ -17,7 +17,6 @@
 lurk <- function(running = TRUE,
                  process,
                  con,
-                 cache_dir = "cache/",
                  interval = 10) {
 
   check_con(con)
@@ -47,6 +46,8 @@ lurk <- function(running = TRUE,
 
         # evaluate function passed in the process argument via job_type
         res <- eval(substitute(process[[unlist(input$job_type)]]))
+        
+        cache_dir <- unlist(input$cache_dir)
 
         # cache result
         simpleCache::simpleCache(cacheName = unlist(input$job_id), 

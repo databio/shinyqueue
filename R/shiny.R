@@ -28,7 +28,7 @@ parse_query <- function(session = getSession()) {
 #'
 #' @examples
 retrieve <- function(session = getSession(),
-                     cache_dir = "cache/",
+                     cache_dir,
                      con) {
 
   check_con(con)
@@ -110,6 +110,7 @@ retrieve <- function(session = getSession(),
 submit <- function(con,
                    job_id,
                    job_type,
+                   cache_dir,
                    status = "Queued",
                    time_queued = Sys.time(),
                    input) {
@@ -118,6 +119,7 @@ submit <- function(con,
 
   specs <- c(job_id = job_id,
              job_type = job_type,
+             cache_dir = cache_dir,
              status = status,
              time_queued = time_queued,
              shiny::reactiveValuesToList(input))
