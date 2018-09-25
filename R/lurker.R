@@ -32,7 +32,13 @@ lurk <- function(running = TRUE,
       for (i in 1:qdepth) {
 
         # get job at iterator
-        input <<- con$find(queued)[i,]
+        # input <<- con$find(queued)[i,]
+        pos <- 1
+        envir = as.environment(pos)
+        
+        assign("input", 
+               con$find(queued)[i,], 
+               envir = envir)
 
         # get id json string for updating db
         idstr <- paste0("{\"job_id\":\"", input$job_id, "\"}")
@@ -62,7 +68,7 @@ lurk <- function(running = TRUE,
         qdepth <- con$count(queued)
 
         # cleanup
-        rm(input, envir = .GlobalEnv)
+        rm(input, envir = envir)
 
       }
 

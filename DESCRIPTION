@@ -2,8 +2,11 @@ Package: shinyqueue
 Version: 0.0.0.9000
 Title: What the Package Does (one line, title case)
 Description: What the package does (one paragraph).
-Authors@R: person("First", "Last", , "first.last@example.com", c("aut", "cre"))
-License: What license it uses
+Authors@R: c(person("VP", "Nagraj", email = "vpnagraj@virginia.edu", role =
+    c("aut")), person("Nathan", "Sheffield", email = "nathan@code.databio.org",
+    role = c("aut", "cre")))
 Encoding: UTF-8
+Imports: shiny, simpleCache, mongolite
 LazyData: true
+License: BSD_2_clause + file LICENSE
 ByteCompile: true
