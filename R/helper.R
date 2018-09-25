@@ -10,7 +10,7 @@
 #' @export
 #'
 #' @examples
-hash <- function(alpha = TRUE, numeric = TRUE, length = 15) {
+job_hash <- function(alpha = TRUE, numeric = TRUE, length = 15) {
 
   if (alpha & !numeric) {
 
