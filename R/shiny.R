@@ -3,13 +3,14 @@
 # parse_query
 #' Title
 #'
-#' @param session
 #'
 #' @return
 #' @export
 #'
 #' @examples
-parse_query <- function(session = getSession()) {
+parse_query <- function() {
+  
+  session <- shiny::getDefaultReactiveDomain()
 
   shiny::reactive({ shiny::parseQueryString(session$clientData$url_search) })
 
@@ -19,24 +20,24 @@ parse_query <- function(session = getSession()) {
 # retrieve job
 #' Title
 #'
-#' @param session
-#' @param cacheDir
 #' @param con
+#' @param cacheDir
 #'
 #' @return
 #' @export
 #'
 #' @examples
-retrieve <- function(session = getSession(),
-                     cache_dir,
-                     con) {
+retrieve <- function(con,
+                     cache_dir) {
 
   check_con(con)
+  
+  session <- shiny::getDefaultReactiveDomain()
 
-  query <- shiny::reactive({ shiny::parseQueryString(session$clientData$url_search) })
+  query <- parse_query()
 
   shinyqueue <<- shiny::reactiveValues()
-
+  
   shiny::observe({
 
     # is there a query and is it in the job db?

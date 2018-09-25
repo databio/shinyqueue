@@ -50,25 +50,6 @@ connect <- function(db_url, db_name) {
 
 
 ##################
-# get session
-# helper function from shinyFiles
-
-#' Title
-#'
-#'
-getSession <- function() {
-  session <- shiny::getDefaultReactiveDomain()
-
-  if (is.null(session)) {
-    stop(paste(
-      "could not find the Shiny session object. This usually happens when a",
-      "shinyjs function is called from a context that wasn't set up by a Shiny session."
-    ))
-  }
-
-  session
-}
-
 # check connection
 
 check_con <- function(con) {
