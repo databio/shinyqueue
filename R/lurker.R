@@ -54,11 +54,29 @@ lurk <- function(running = TRUE,
         res <- eval(substitute(process[[unlist(input$job_type)]]))
         
         cache_dir <- unlist(input$cache_dir)
-
-        # cache result
-        simpleCache::simpleCache(cacheName = unlist(input$job_id), 
-                                 instruction = res,
-                                 cacheDir = cache_dir)
+        
+        
+        # should the result be encrypted?
+        if (unlist(input$job_encrypted)) {
+          
+          # set up key and hash for encryption
+          key <- sodium::hash(charToRaw(unlist(input$job_id)))
+          msg <- serialize(res,connection = NULL)
+          
+          cipher <- sodium::data_encrypt(msg, key)
+          
+          simpleCache::simpleCache(cacheName = unlist(input$job_id), 
+                                   instruction = { cipher },
+                                   noload = TRUE,
+                                   cacheDir = cache_dir)
+        } else {
+          
+          # cache result
+          simpleCache::simpleCache(cacheName = unlist(input$job_id), 
+                                   instruction = res,
+                                   cacheDir = cache_dir)
+          
+        }
         
         # set status to completed
         con$update(idstr,

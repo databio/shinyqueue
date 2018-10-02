@@ -21,19 +21,22 @@ parse_query <- function() {
 #' Title
 #'
 #' @param con
-#' @param cacheDir
+#' @param cache_dir
+#' @param encrypt
 #'
 #' @return
 #' @export
 #'
 #' @examples
 retrieve <- function(con,
-                     cache_dir) {
+                     cache_dir,
+                     encrypt = TRUE) {
 
   check_con(con)
   
   session <- shiny::getDefaultReactiveDomain()
-
+  
+  # reactive for the url result param ... need to call it as query()
   query <- parse_query()
 
   shinyqueue <<- shiny::reactiveValues()
@@ -51,12 +54,36 @@ retrieve <- function(con,
 
         shinyqueue$status <<- "Completed"
 
-        # read data
-        simpleCache::simpleCache(cacheName = unlist(query()),
-                                 cacheDir = cache_dir,
-                                 assignToVariable = "res")
         
-        shinyqueue$result <<- res
+        # handle decryption if the job has been encrypted
+        if (encrypt) {
+          
+          env <- new.env()
+          
+          simpleCache::simpleCache(cacheName = unlist(query()), 
+                      assignToVariable = "cipher", 
+                      cacheDir=cache_dir)
+          
+          cipher <- get("cipher", envir = env)
+          
+          # keyphrase
+          key <- sodium::hash(charToRaw(unlist(query())))
+          
+          # decrypt results
+          res <- unserialize(sodium::data_decrypt(cipher, key))
+          
+          shinyqueue$result <<- res
+          
+        } else {
+          
+          # read data
+          simpleCache::simpleCache(cacheName = unlist(query()),
+                                   cacheDir = cache_dir,
+                                   assignToVariable = "res")
+          
+          shinyqueue$result <<- res
+          
+        }
 
         # focus on results tab
         shiny::updateNavbarPage(session, "mainmenu",
@@ -99,6 +126,8 @@ retrieve <- function(con,
 #' @param con
 #' @param id
 #' @param type
+#' @param cache_dir
+#' @param encrypt
 #' @param status
 #' @param time_queued
 #' @param input
@@ -112,6 +141,7 @@ submit <- function(con,
                    job_id,
                    job_type,
                    cache_dir,
+                   encrypt = TRUE,
                    status = "Queued",
                    time_queued = Sys.time(),
                    input) {
@@ -120,6 +150,7 @@ submit <- function(con,
 
   specs <- c(job_id = job_id,
              job_type = job_type,
+             job_encrypted = encrypt,
              cache_dir = cache_dir,
              status = status,
              time_queued = time_queued,

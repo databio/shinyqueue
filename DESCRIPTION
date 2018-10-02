@@ -3,10 +3,10 @@ Version: 0.0.0.9000
 Title: What the Package Does (one line, title case)
 Description: What the package does (one paragraph).
 Authors@R: c(person("VP", "Nagraj", email = "vpnagraj@virginia.edu", role =
-    c("aut")), person("Nathan", "Sheffield", email = "nathan@code.databio.org",
-    role = c("aut", "cre")))
+    c("aut", "cre")), person("Nathan", "Sheffield", email = "nathan@code.databio.org",
+    role = c("aut")))
 Encoding: UTF-8
-Imports: shiny, simpleCache, mongolite
+Imports: shiny, simpleCache, mongolite, sodium
 LazyData: true
 License: BSD_2_clause + file LICENSE
 ByteCompile: true
